@@ -1,0 +1,21 @@
+{
+  "name": "helbrary/db-synchronizer",
+  "description": "Library for synchronization local database from remote database",
+  "type": "library",
+  "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+  "require": {
+	"php": ">= 5.3.7",
+	"nette/database": ">= 2.2.0",
+	"dg/mysql-dump": ">= v1.3.0"
+  },
+  "autoload": {
+	"psr-4": {
+	  "Helbrary\\DbSynchronizer\\": "src/"
+	},
+	"classmap": [
+	  "src/Base.php",
+	  "src/Server.php",
+	  "src/Client.php"
+	]
+  }
+}
