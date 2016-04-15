@@ -6,7 +6,8 @@
   "require": {
 	"php": ">= 5.3.7",
 	"nette/database": ">= 2.2.0",
-	"dg/mysql-dump": ">= v1.3.0"
+	"dg/mysql-dump": ">= v1.3.0",
+	"nette/utils": ">= 2.3.8"
   },
   "autoload": {
 	"psr-4": {

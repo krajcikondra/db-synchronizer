@@ -2,6 +2,8 @@
 
 namespace Helbrary\DbSynchronizer;
 
+use Nette\Utils\FileSystem;
+
 class Server extends Base
 {
 
@@ -20,6 +22,7 @@ class Server extends Base
 	public function __construct($tempDir)
 	{
 		$this->tempDir = $tempDir;
+		FileSystem::createDir($tempDir);
 	}
 
 	/**
