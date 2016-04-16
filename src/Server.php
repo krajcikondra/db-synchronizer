@@ -2,7 +2,8 @@
 
 namespace Helbrary\DbSynchronizer;
 
-use Nette\Utils\FileSystem;
+use Nette\Application\Responses\FileResponse;
+use Tracy\Debugger;
 
 class Server extends Base
 {
@@ -22,7 +23,6 @@ class Server extends Base
 	public function __construct($tempDir)
 	{
 		$this->tempDir = $tempDir;
-		FileSystem::createDir($tempDir);
 	}
 
 	/**
@@ -83,38 +83,4 @@ class Server extends Base
 		return $dumpName;
 	}
 
-	/**
-	 * Download file
-	 * @param string $file
-	 */
-	private function downloadFile($file)
-	{
-		if (file_exists($file)) {
-			header('Content-Description: File Transfer');
-			header('Content-Type: application/octet-stream');
-			header('Content-Disposition: attachment; filename="'.basename($file).'"');
-			header('Expires: 0');
-			header('Cache-Control: must-revalidate');
-			header('Pragma: public');
-			header('Content-Length: ' . filesize($file));
-			readfile($file);
-			exit;
-		}
-	}
-
-
-	/**
-	 * Dump db and download
-	 * @param string $server
-	 * @param string $username
-	 * @param string $password
-	 * @param string $database
-	 * @param string|null $archiveDirectory
-	 * @throws RequestIsNotAuthorizedException
-	 */
-	public function dumpAndDownload($server = 'localhost', $username = 'root', $password = '', $database, $archiveDirectory = NULL)
-	{
-		$file = $this->dump($server, $username, $password, $database, $archiveDirectory);
-		$this->downloadFile($file);
-	}
 }
