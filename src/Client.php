@@ -3,20 +3,31 @@
 namespace Helbrary\DbSynchronizer;
 
 use Nette\NotImplementedException;
+use Nette\Object;
 
-class Client
+/**
+ * Class Client
+ * @package Helbrary\DbSynchronizer
+ * @author Ondřej Krajčík <o.krajcik@seznam.cz>
+ */
+class Client extends Object
 {
 
 	/**
 	 * @var string
 	 */
-	private $tempDir;
+	protected $tempDir;
 
 	/**
 	 * @var \GuzzleHttp\Client
 	 */
-	private $client;
+	protected $client;
 
+	/**
+	 * @var callable - (string $pathToDumpFile)
+	 */
+	public $onDumDownload = [];
+	
 	/**
 	 * Client constructor.
 	 * @param string $tempDir
@@ -52,6 +63,7 @@ class Client
 	public function syncLocalWithRemote(WebApi $webApi, Database $localDb, Database $remoteDb)
 	{
 		$pathToSqlDump = $this->downloadRemoteDump($webApi, $remoteDb);
+		$this->onDumDownload($pathToSqlDump);
 		$this->executeSqlDump($pathToSqlDump, $localDb);
 	}
 

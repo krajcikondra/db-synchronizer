@@ -7,6 +7,7 @@ use Nette\Object;
 /**
  * Class Database
  * @package Helbrary\DbSynchronizer
+ * @author Ondřej Krajčík <o.krajcik@seznam.cz>
  */
 class Database extends Object
 {
@@ -37,6 +38,5 @@ class Database extends Object
 		$this->password = $password;
 		$this->dbName = $dbName;
 	}
-
 
 }

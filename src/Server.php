@@ -2,9 +2,11 @@
 
 namespace Helbrary\DbSynchronizer;
 
-use Nette\Application\Responses\FileResponse;
-use Tracy\Debugger;
-
+/**
+ * Class Server
+ * @package Helbrary\DbSynchronizer
+ * @author Ondřej Krajčík <o.krajcik@seznam.cz>
+ */
 class Server extends Base
 {
 
@@ -53,13 +55,13 @@ class Server extends Base
 	}
 	
 	/**
-	 * Dump db
+	 * Dump database
 	 * @param string $server
 	 * @param string $username
 	 * @param string $password
 	 * @param string $database
 	 * @param string|null $archiveDirectory - if is null save dump to temp directory, if is not null save dump to archive folder
-	 * @return string
+	 * @return string - path to dump file
 	 * @throws RequestIsNotAuthorizedException
 	 */
 	public function dump($server = 'localhost', $username, $password, $database, $archiveDirectory = NULL)

@@ -4,6 +4,11 @@ namespace Helbrary\DbSynchronizer;
 
 use Nette\Object;
 
+/**
+ * Class WebApi
+ * @package Helbrary\DbSynchronizer
+ * @author Ondřej Krajčík <o.krajcik@seznam.cz>
+ */
 class WebApi extends Object
 {
 
@@ -38,6 +43,5 @@ class WebApi extends Object
 		$this->authUsername = $authUsername;
 		$this->authPassword = $authPassword;
 	}
-
 
 }
