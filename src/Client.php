@@ -49,9 +49,17 @@ class Client extends Object
 		return $this->downloadDump($webApi->baseUrl, $webApi->downloadDumpAction, $remoteDb);
 	}
 
-	public function backupRemoteDatabase()
+	/**
+	 * Backup remote database
+	 * @param WebApi $webApi
+	 * @param Database $remoteDb
+	 * @return bool
+	 */
+	public function backupRemoteDatabase(WebApi $webApi, Database $remoteDb)
 	{
-		throw new NotImplementedException();
+		$this->authenticate($webApi);
+		$response = $this->dumpRemote($webApi->baseUrl, $webApi->downloadDumpAction, $remoteDb);
+		return $response->getStatusCode() === 200;
 	}
 
 	/**
