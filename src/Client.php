@@ -4,13 +4,14 @@ namespace Helbrary\DbSynchronizer;
 
 use Nette\NotImplementedException;
 use Nette\Object;
+use Tracy\Debugger;
 
 /**
  * Class Client
  * @package Helbrary\DbSynchronizer
  * @author Ondřej Krajčík <o.krajcik@seznam.cz>
  */
-class Client extends Object
+class Client extends Base
 {
 
 	/**
@@ -42,24 +43,52 @@ class Client extends Object
 	 * @param WebApi $webApi
 	 * @param Database $remoteDb
 	 * @return string - path to dump in disk
+	 * @throws DumpNotFoundException
+	 * @throws DumpFileIsEmptyException
+	 * @throws BadResponseException
 	 */
 	public function downloadRemoteDump(WebApi $webApi, Database $remoteDb)
 	{
 		$this->authenticate($webApi);
-		return $this->downloadDump($webApi->baseUrl, $webApi->downloadDumpAction, $remoteDb);
+		$dumpPath = $this->downloadDump($webApi, $remoteDb);
+		$this->checkDump($dumpPath);
+		return $dumpPath;
 	}
 
 	/**
 	 * Backup remote database
 	 * @param WebApi $webApi
 	 * @param Database $remoteDb
-	 * @return bool
+	 * @return mixed|\Psr\Http\Message\ResponseInterface
+	 * @throws BadResponseException
 	 */
 	public function backupRemoteDatabase(WebApi $webApi, Database $remoteDb)
 	{
 		$this->authenticate($webApi);
-		$response = $this->dumpRemote($webApi->baseUrl, $webApi->downloadDumpAction, $remoteDb);
-		return $response->getStatusCode() === 200;
+		$response = $this->dumpRemote($webApi, $remoteDb);
+		if ($response->getStatusCode() !== 200) {
+			throw new BadResponseException($response->getStatusCode());
+		}
+		return $response;
+	}
+
+	/**
+	 * Dump remote database
+	 * @param WebApi $webApi
+	 * @param Database $remoteDb
+	 * 
+	 * @return mixed|\Psr\Http\Message\ResponseInterface
+	 */
+	private function dumpRemote(WebApi $webApi, Database $remoteDb)
+	{
+		return $this->getClient()->request('GET', $webApi->baseUrl . '/' . $webApi->downloadDumpAction, array(
+			'query' => array(
+				'host' => $remoteDb->host,
+				'db' => $remoteDb->dbName,
+				'username' => $remoteDb->username,
+				'password' => $remoteDb->password,
+			)
+		));
 	}
 
 	/**
@@ -67,25 +96,35 @@ class Client extends Object
 	 * @param WebApi $webApi
 	 * @param Database $localDb
 	 * @param Database $remoteDb
+	 * @param bool $skipImportErrors
+	 * @throws DumpNotFoundException
+	 * @throws DumpFileIsEmptyException
+	 * @throws BadResponseException
 	 */
-	public function syncLocalWithRemote(WebApi $webApi, Database $localDb, Database $remoteDb)
+	public function syncLocalWithRemote(WebApi $webApi, Database $localDb, Database $remoteDb, $skipImportErrors = FALSE)
 	{
 		$pathToSqlDump = $this->downloadRemoteDump($webApi, $remoteDb);
 		$this->onDumDownload($pathToSqlDump);
-		$this->executeSqlDump($pathToSqlDump, $localDb);
+		$this->executeSqlDump($pathToSqlDump, $localDb, $skipImportErrors);
 	}
 
 	/**
 	 * Execute sql file on db
 	 * @param string $dumpFile - path to dump file
 	 * @param Database $localDatabase
+	 * @param bool $skipErrors
 	 */
-	public function executeSqlDump($dumpFile, Database $localDatabase)
+	public function executeSqlDump($dumpFile, Database $localDatabase, $skipErrors = FALSE)
 	{
 		$command = "mysql $localDatabase->dbName --user=" . $localDatabase->username;
 		if (!empty($localDatabase->password)) {
 			$command .= ' --password=' . $localDatabase->password;
 		}
+		
+		if ($skipErrors) {
+			$command .= ' -f';
+		}
+		
 		$command .= ' < ';
 		$command .= ' ' . $dumpFile;
 		shell_exec($command);
@@ -122,21 +161,17 @@ class Client extends Object
 
 	/**
 	 * Download dump
-	 * @param string $webUrl
-	 * @param string $webDownloadDumpAction
+	 * @param WebApi $webApi
 	 * @param Database $remoteDb
 	 * @return string - path to dump in disk
+	 * @throws BadResponseException
 	 */
-	private function downloadDump($webUrl, $webDownloadDumpAction, Database $remoteDb)
+	private function downloadDump(WebApi $webApi, Database $remoteDb)
 	{
-		$response = $this->getClient()->request('GET', $webUrl . '/' . $webDownloadDumpAction, array(
-			'query' => array(
-				'host' => $remoteDb->host,
-				'db' => $remoteDb->dbName,
-				'username' => $remoteDb->username,
-				'password' => $remoteDb->password,
-			)
-		));
+		$response = $this->dumpRemote($webApi, $remoteDb);
+		if ($response->getStatusCode() !== 200) {
+			throw new BadResponseException($response->getStatusCode());
+		}
 		$dump = $response->getBody();
 		$dumpPath = $this->tempDir . DIRECTORY_SEPARATOR . 'dump.sql';
 		file_put_contents($dumpPath, $dump);

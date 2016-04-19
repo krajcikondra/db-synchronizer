@@ -63,6 +63,8 @@ class Server extends Base
 	 * @param string|null $archiveDirectory - if is null save dump to temp directory, if is not null save dump to archive folder
 	 * @return string - path to dump file
 	 * @throws RequestIsNotAuthorizedException
+	 * @throws DumpNotFoundException
+	 * @throws DumpFileIsEmptyException
 	 */
 	public function dump($server = 'localhost', $username, $password, $database, $archiveDirectory = NULL)
 	{
@@ -82,6 +84,7 @@ class Server extends Base
 		}
 
 		$dump->save($dumpName);
+		$this->checkDump($dumpName);
 		return $dumpName;
 	}
 

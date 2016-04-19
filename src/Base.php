@@ -16,4 +16,24 @@ class Base extends Object
 
 	const LOG_DIRECTORY_NAME = 'db_synchronizer';
 
+
+	/**
+	 * Check if dump file exists and is not empty
+	 * @param string $dumpPath - path to dump file
+	 * @return bool
+	 * @throws DumpNotFoundException
+	 * @throws DumpFileIsEmptyException
+	 */
+	public static function checkDump($dumpPath)
+	{
+		if (!file_exists($dumpPath)) {
+			throw new DumpNotFoundException($dumpPath);
+		}
+
+		if (filesize($dumpPath) <= 1) {
+			throw new DumpFileIsEmptyException($dumpPath);
+		}
+
+		return TRUE;
+	}
 }
