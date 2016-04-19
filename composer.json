@@ -5,10 +5,11 @@
   "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
   "require": {
 	"php": ">= 5.3.7",
-	"nette/database": ">= 2.2.0",
 	"dg/mysql-dump": ">= v1.3.0",
-	"nette/utils": ">= 2.3.0",
-	"guzzlehttp/guzzle": "6.2.0"
+	"guzzlehttp/guzzle": "6.2.0",
+	"kdyby/events": ">= v3.0",
+	"nette/database": ">= 2.2.0",
+	"nette/utils": ">= 2.3.0"
   },
   "autoload": {
 	"psr-4": {
@@ -19,7 +20,8 @@
 	  "src/Server.php",
 	  "src/Client.php",
 	  "src/Database.php",
-	  "src/WebApi.php"
+	  "src/WebApi.php",
+	  "src/Commands/DatabaseCommand.php"
 	]
   }
 }
