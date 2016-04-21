@@ -7,7 +7,7 @@
 	"php": ">= 5.3.7",
 	"dg/mysql-dump": ">= v1.3.0",
 	"guzzlehttp/guzzle": "6.2.0",
-	"kdyby/events": ">= v3.0",
+	"kdyby/console": ">= v2.4.0",
 	"nette/database": ">= 2.2.0",
 	"nette/utils": ">= 2.3.0"
   },

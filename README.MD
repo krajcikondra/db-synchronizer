@@ -39,7 +39,7 @@ Register commands for console
 ```sh
 	console:
 		commands:
-			- App\Model\Commands\DatabaseCommand(%tempDir%, %dbSyncParams%)
+			- Helbrary\DbSynchronizer\Commands\DatabaseCommand(%tempDir%, %dbSyncParams%)
 ```
 
 ### Server side
