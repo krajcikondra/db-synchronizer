@@ -76,17 +76,17 @@ class DatabaseCommand extends Command
 	 */
 	private function syncLocal(OutputInterface $output, $skipImportErrors = FALSE)
 	{
-		$output->writeln('Start synchronize local database from remote');
+		$output->writeln('[INFO] Start synchronize local database from remote');
 		$client = $this->getClient();
 		$client->onDumDownload[] = function() use ($output) {
-			$output->writeln('Remote dump is successfully downloaded');
+			$output->writeln('[INFO] Remote dump is successfully downloaded');
 		};
 
 		try {
 			$client->syncLocalWithRemote($this->createWebApi(), $this->createLocalDb(), $this->createProductionDb(), $skipImportErrors);
-			$output->writeln('Local db is synchonized');
+			$output->writeln('[SUCCESS] Local db is synchonized');
 		} catch(\Exception $e) {
-			$output->writeln('Error: Synchronization of local database failed: ' . $e->getMessage());
+			$output->writeln('[ERROR] Synchronization of local database failed: ' . $e->getMessage());
 			Debugger::log($e);
 		}
 	}
@@ -100,13 +100,13 @@ class DatabaseCommand extends Command
 	 */
 	private function backupRemoteDb(OutputInterface $output, Client $client, WebApi $webApi, Database $remoteDb)
 	{
-		$output->writeln('Start backup remote db of web: ' . $webApi->baseUrl);
+		$output->writeln('[INFO] Start backup remote db of web: ' . $webApi->baseUrl);
 		try {
 			$client->backupRemoteDatabase($webApi, $remoteDb);
-			$output->writeln('Backup of remote database done: ' . $webApi->baseUrl);
+			$output->writeln('[SUCCESS] Backup of remote database done: ' . $webApi->baseUrl);
 		} catch (BadResponseException $e) {
 			Debugger::log($e);
-			$output->writeln('Error: Backup remote failed: ' . $e->getMessage());
+			$output->writeln('[ERROR] Backup remote failed: ' . $e->getMessage());
 		}
 	}
 	
