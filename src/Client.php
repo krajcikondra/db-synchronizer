@@ -81,7 +81,7 @@ class Client extends Base
 	 */
 	private function dumpRemote(WebApi $webApi, Database $remoteDb)
 	{
-		return $this->getClient()->request('GET', $webApi->baseUrl . '/' . $webApi->downloadDumpAction, array(
+		return $this->getClient()->request('POST', $webApi->baseUrl . '/' . $webApi->downloadDumpAction, array(
 			'query' => array(
 				'host' => $remoteDb->host,
 				'db' => $remoteDb->dbName,
@@ -150,7 +150,7 @@ class Client extends Base
 	private function authenticate(WebApi $webApi)
 	{
 		return $this->getClient()
-			->request('GET', $webApi->baseUrl . '/' . $webApi->authAction, array(
+			->request('POST', $webApi->baseUrl . '/' . $webApi->authAction, array(
 				'query' => array(
 					'username' => $webApi->authUsername,
 					'password' => $webApi->authPassword,
