@@ -119,8 +119,8 @@ class DatabaseCommand extends Command
 			$this->config['web']['productionBaeUrl'],
 			$this->config['web']['authAction'],
 			$this->config['web']['dumpDownloadAction'],
-			$this->config['web']['webAdminUsername'],
-			$this->config['web']['webAdminPassword']
+			$this->config['web']['authUsername'],
+			$this->config['web']['authPassword']
 		);
 	}
 
@@ -131,9 +131,9 @@ class DatabaseCommand extends Command
 	{
 		return new Database(
 			$this->config['database']['local']['host'],
-			$this->config['database']['local']['username'],
+			$this->config['database']['local']['user'],
 			$this->config['database']['local']['password'],
-			$this->config['database']['local']['dbName']
+			$this->config['database']['local']['dbname']
 			);
 	}
 
@@ -144,9 +144,9 @@ class DatabaseCommand extends Command
 	{
 		return new Database(
 			$this->config['database']['production']['host'],
-			$this->config['database']['production']['username'],
+			$this->config['database']['production']['user'],
 			$this->config['database']['production']['password'],
-			$this->config['database']['production']['dbName']
+			$this->config['database']['production']['dbname']
 		);
 	}
 }

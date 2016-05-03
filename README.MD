@@ -19,18 +19,18 @@ Parameters for config
 				productionBaeUrl: 'http://somewebpage.cz'
 				authAction: 'db-dump-login' # it means thath authorization action must be available on url 'http://somewebpage.cz/db-dump-login'
 				dumpDownloadAction: 'db-download-dump' # it means thath download dump action must be available on url 'http://somewebpage.cz/db-download-dump'
-				webAdminUsername: 'admin'
-				webAdminPassword: 'admin_password'
+				authUsername: 'admin'
+				authPassword: 'admin_password'
 			database:
 				production:
 					host: 'some_host'
-					dbName: 'my_remote_db'
-					username: 'admin'
+					dbname: 'my_remote_db'
+					user: 'admin'
 					password: 'admin_password'
 				local:
 					host: 'localhost'
-					dbName: 'my_db'
-					username: 'root'
+					dbname: 'my_db'
+					user: 'root'
 					password:
 ```
 
