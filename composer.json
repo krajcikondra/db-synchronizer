@@ -7,9 +7,9 @@
 	"php": ">= 5.3.7",
 	"dg/mysql-dump": ">= v1.3.0",
 	"guzzlehttp/guzzle": "6.2.0",
-	"kdyby/console": ">= v2.4.0",
-	"nette/database": ">= 2.2.0",
-	"nette/utils": ">= 2.3.0"
+	"kdyby/console": ">= v2.0.1",
+	"nette/database": ">= 2.1.9",
+	"nette/utils": ">= 2.1.9"
   },
   "autoload": {
 	"psr-4": {
