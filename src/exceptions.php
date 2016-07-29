@@ -18,3 +18,6 @@ class BadResponseException extends \RuntimeException
 		parent::__construct('Reponse return http code ' . $code);
 	}
 }
+
+class DatabaseConnectionFailedException extends \RuntimeException
+{}
