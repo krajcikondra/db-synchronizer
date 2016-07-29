@@ -2,6 +2,8 @@
 
 namespace Helbrary\DbSynchronizer;
 
+use Nette\Utils\FileSystem;
+
 /**
  * Class Server
  * @package Helbrary\DbSynchronizer
@@ -53,7 +55,7 @@ class Server extends Base
 		unset($_SESSION[self::SESSION_USER_NAME]);
 		unset($_SESSION[self::SESSION_IS_LOGGED]);
 	}
-	
+
 	/**
 	 * Dump database
 	 * @param string $server
@@ -65,6 +67,7 @@ class Server extends Base
 	 * @throws RequestIsNotAuthorizedException
 	 * @throws DumpNotFoundException
 	 * @throws DumpFileIsEmptyException
+	 * @throws DatabaseConnectionFailedException
 	 */
 	public function dump($server = 'localhost', $username, $password, $database, $archiveDirectory = NULL)
 	{
@@ -72,20 +75,28 @@ class Server extends Base
 			throw new RequestIsNotAuthorizedException();
 		}
 		$this->destroyAuthorization();
-		
-		$dump = new \MySQLDump(new \mysqli($server, $username, $password, $database));
+		$mysqli = @ new \mysqli($server, $username, $password, $database);
+		if (count($mysqli->error_list)) {
+			throw new DatabaseConnectionFailedException('omg');
+		}
+		$dump = new \MySQLDump($mysqli);
 		$now = new \DateTime();
 		$dumpName = self::DUMP_FILE_PREFIX . $now->format('Y-m-d_h-m-s') . self::DUMP_FILE_SUFFIX;
 
 		if ($archiveDirectory) {
-			$dumpName = $archiveDirectory . DIRECTORY_SEPARATOR . $dumpName;
+			$targetFolder = $archiveDirectory;
 		} else {
-			$dumpName = $this->tempDir . DIRECTORY_SEPARATOR . $dumpName;
+			$targetFolder = $this->tempDir;
 		}
 
-		$dump->save($dumpName);
-		$this->checkDump($dumpName);
-		return $dumpName;
+		if (!file_exists($targetFolder)) {
+			FileSystem::createDir($targetFolder);
+		}
+
+		$dumpPath = $targetFolder . DIRECTORY_SEPARATOR . $dumpName;
+		$dump->save($dumpPath);
+		$this->checkDump($dumpPath);
+		return $dumpPath;
 	}
 
 }
